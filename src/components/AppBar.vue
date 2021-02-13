@@ -68,19 +68,19 @@ export default {
         {
           title: "系统消息",
           icon: "message-bulleted",
-          link: "",
+          link: "/self/notifications/system",
           alarm: true
         },
         {
           title: "回复我的",
           icon: "comment-quote-outline",
-          link: "",
+          link: "/self/notifications/reply",
           alarm: false
         },
         {
           title: "我的关注",
           icon: "eye-outline",
-          link: "",
+          link: "/self/notifications/focus",
           alarm: false
         }
       ],
@@ -88,19 +88,19 @@ export default {
         {
           title: "登录",
           icon: "login",
-          link: "",
+          link: "/login",
           alarm: false
         },
         {
           title: "注册",
           icon: "account-plus",
-          link: "",
+          link: "/register",
           alarm: false
         },
         {
           title: "帮助",
           icon: "account-question",
-          link: "",
+          link: "/help",
           alarm: true
         }
       ],
@@ -108,19 +108,19 @@ export default {
         {
           title: "登出",
           icon: "logout",
-          link: "",
+          link: "/logout",
           alarm: false
         },
         {
           title: "个人中心",
           icon: "account-details",
-          link: "",
+          link: "/self",
           alarm: true
         },
         {
           title: "个人设置",
           icon: "account-cog",
-          link: "",
+          link: "/self/setting",
           alarm: true
         }
       ]

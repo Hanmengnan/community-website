@@ -10,10 +10,10 @@
         </v-icon>
       </v-btn>
     </template>
-    <v-btn fab small dark color="green">
+    <v-btn fab small dark color="green" v-on:click="refreshPage()">
       <v-icon>mdi-refresh</v-icon>
     </v-btn>
-    <v-btn fab small dark color="indigo">
+    <v-btn fab small dark color="indigo" href="#appbar">
       <v-icon>mdi-chevron-up</v-icon>
     </v-btn>
   </v-speed-dial>
@@ -24,8 +24,13 @@ export default {
   name: "PageFunctionButton",
   data() {
     return {
-      fab: true
+      fab: false
     };
+  },
+  methods: {
+    refreshPage: function() {
+      document.location.reload(true);
+    }
   }
 };
 </script>

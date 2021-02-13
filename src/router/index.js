@@ -6,6 +6,7 @@ import Home from "@/views/Home";
 import NotFound from "@/views/NotFound";
 import HomePage from "@/components/HomePage";
 import SelfPage from "@/components/SelfPage";
+import ArticlePage from "@/components/ArticlePage";
 
 Vue.use(VueRouter);
 
@@ -29,6 +30,11 @@ const routes = [
         path: "/",
         name: "homepage",
         component: HomePage
+      },
+      {
+        path: "/post",
+        name: "post",
+        component: ArticlePage
       },
       {
         path: "/self",
