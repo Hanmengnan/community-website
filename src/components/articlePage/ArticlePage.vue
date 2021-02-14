@@ -448,8 +448,8 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@import "~@/assets/css/common";
-@import "~@/assets/css/varibale";
+@import "~@/assets/css/common.less";
+@import "~@/assets/css/varibale.less";
 
 .cards-container {
   display: grid;

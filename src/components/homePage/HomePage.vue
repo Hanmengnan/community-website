@@ -134,8 +134,8 @@
 </template>
 
 <script>
-import ArticleCard from "@/components/ArticleCard";
-import Pagination from "@/components/Pagination";
+import ArticleCard from "@/components/homePage/ArticleCard";
+import Pagination from "@/components/homePage/Pagination";
 
 export default {
   name: "HomePage",
@@ -261,7 +261,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@import "~@/assets/css/common";
+@import "~@/assets/css/common.less";
 
 .cards-container {
   display: grid;
