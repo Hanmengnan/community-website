@@ -59,19 +59,14 @@ export default {
   methods: {
     login: function() {
       axios
-        .post("http://localhost:5000/login", {
+        .post("/login", {
           username: this.items.username.value,
           email: this.items.email.value,
           password: this.items.password.value
         })
         .then(res => {
           // 跳转并保存Cookie
-          console.log(res);
-          this.$store.commit("login", {
-            authority: 1,
-            username: "test",
-            avatarUrl: "https://cdn.vuetifyjs.com/images/john.jpg"
-          });
+          window.localStorage.setItem("userAvatar", res.data.avatarUrl);
           this.$router.push("/");
         })
         .catch(function(err) {
