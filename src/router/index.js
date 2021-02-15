@@ -34,12 +34,12 @@ const routes = [
         component: HomePage
       },
       {
-        path: "/post",
+        path: "post",
         name: "post",
         component: ArticlePage
       },
       {
-        path: "/self",
+        path: "self",
         name: "self",
         component: SelfPage,
         children: [
@@ -65,8 +65,8 @@ const routes = [
 ];
 
 const router = new VueRouter({
-  mode: "history",
-  base: process.env.BASE_URL,
+  mode: "hash",
+  // base: process.env.BASE_URL,
   routes
 });
 

@@ -4,7 +4,7 @@
       <v-list-item
         v-for="(item, index) in listItems"
         :key="index"
-        :href="item.link"
+        @click="toHref(item.link)"
       >
         <v-list-item-icon>
           <v-badge color="pink" dot :value="item.alarm">
@@ -29,6 +29,11 @@ export default {
       default: function() {
         return [];
       }
+    }
+  },
+  methods: {
+    toHref: function(link) {
+      this.$router.push({ path: link });
     }
   }
 };

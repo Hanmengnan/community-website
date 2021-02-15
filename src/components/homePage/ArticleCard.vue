@@ -1,6 +1,6 @@
 <template>
   <v-hover v-slot="{ hover }">
-    <v-card :elevation="hover ? 24 : 6" href="/post">
+    <v-card :elevation="hover ? 24 : 6" @click="articleDetail">
       <v-card-title>{{ title }}</v-card-title>
       <v-card-subtitle>{{ subTile }}</v-card-subtitle>
       <v-card-text>
@@ -56,8 +56,10 @@ export default {
       required: true
     }
   },
-  mounted() {
-    console.log(this.index);
+  methods: {
+    articleDetail: function() {
+      this.$router.push({ path: "/post" });
+    }
   }
 };
 </script>
