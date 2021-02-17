@@ -136,6 +136,7 @@
 <script>
 import ArticleCard from "@/components/homePage/ArticleCard";
 import Pagination from "@/components/homePage/Pagination";
+import axios from "axios";
 
 export default {
   name: "HomePage",
@@ -256,6 +257,14 @@ export default {
       this.pics.length = 0;
       this.overlay = false;
     }
+  },
+  mounted() {
+    axios
+      .get("/homePage")
+      .then(function(res) {
+        console.log(res);
+      })
+      .catch();
   }
 };
 </script>

@@ -57,8 +57,11 @@ export default {
           repassword: this.items.repassword.value
         })
         .then(function(res) {
-          // 跳转
-          console.log(res);
+          if (res.data.code === "200") {
+            this.$router.push("/login");
+          } else if (res.data.code === "500") {
+            alert(res.data.code);
+          }
         })
         .catch(function(err) {
           console.log(err);
