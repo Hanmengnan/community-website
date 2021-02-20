@@ -75,7 +75,7 @@
             <v-form ref="ideaForm">
               <v-row>
                 <v-col>
-                  <v-textarea outlined ref="textarea"></v-textarea>
+                  <v-textarea outlined ref="content"></v-textarea>
                 </v-col>
               </v-row>
               <v-row justify="start">
@@ -111,22 +111,64 @@
               </v-row>
               <v-row>
                 <v-col>
-                  话题
-                  <v-text-field dense outlined ref="topic"></v-text-field>
+                  <div class="combobox-header">
+                    <div>
+                      话题
+                    </div>
+                    <v-tooltip top>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-icon small v-bind="attrs" v-on="on">
+                          mdi-help-circle
+                        </v-icon>
+                      </template>
+                      <span>输入标签，回车确定</span>
+                    </v-tooltip>
+                  </div>
+                  <v-combobox
+                    chips
+                    dense
+                    multiple
+                    outlined
+                    clearable
+                    :items="publishIdea.tags"
+                    ref="tags"
+                  >
+                    <template v-slot:selection="data">
+                      <v-chip
+                        :key="JSON.stringify(data.item)"
+                        v-bind="data.attrs"
+                        @click:close="data.parent.selectItem(data.item)"
+                      >
+                        <v-avatar
+                          class="accent white--text"
+                          left
+                          v-text="data.item.slice(0, 1).toUpperCase()"
+                        ></v-avatar>
+                        {{ data.item }}
+                      </v-chip>
+                    </template>
+                  </v-combobox>
                 </v-col>
                 <v-col>
                   分类
-                  <v-select dense outlined ref="classify"></v-select>
+                  <v-select
+                    dense
+                    outlined
+                    ref="classify"
+                    :items="publishIdea.classify"
+                  ></v-select>
                 </v-col>
               </v-row>
             </v-form>
           </v-container>
         </v-card-text>
         <v-card-actions class="d-flex justify-end">
-          <v-btn depressed color="blue-grey lighten-4" v-on:click="cancel()"
-            >取消</v-btn
-          >
-          <v-btn depressed color="primary" v-on:click="publish()">确定</v-btn>
+          <v-btn depressed color="blue-grey lighten-4" v-on:click="cancel()">
+            取消
+          </v-btn>
+          <v-btn depressed color="primary" v-on:click="publish()">
+            确定
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -146,8 +188,17 @@ export default {
   },
   data() {
     return {
-      justify: ["start", "center", "end", "space-around", "space-between"],
       overlay: false,
+      publishButton: [
+        {
+          title: "发想法",
+          icon: "lightbulb-on",
+          color: "light-blue",
+          event: this.changeOverlay
+        },
+        { title: "发视频", icon: "video", color: "teal accent-3" },
+        { title: "发文章", icon: "clipboard-edit", color: "orange lighten-1" }
+      ],
       articleList: [
         {
           title: "测试",
@@ -184,16 +235,6 @@ export default {
           time: "2021/02/07 20:47",
           tags: ["测试", "测试", "测试", "测试"]
         }
-      ],
-      publishButton: [
-        {
-          title: "发想法",
-          icon: "lightbulb-on",
-          color: "light-blue",
-          event: this.changeOverlay
-        },
-        { title: "发视频", icon: "video", color: "teal accent-3" },
-        { title: "发文章", icon: "clipboard-edit", color: "orange lighten-1" }
       ],
       tags: [
         {
@@ -238,7 +279,11 @@ export default {
           title: "Debug模式和Release模式有什么区别？"
         }
       ],
-      pics: []
+      pics: [],
+      publishIdea: {
+        classify: ["琐碎吐槽", "感悟思考", "学习点滴", "仅是记录", "我不知道"],
+        tags: []
+      }
     };
   },
   methods: {
@@ -246,11 +291,38 @@ export default {
       this.overlay = true;
     },
     uploadPic: function() {
-      this.pics.push({ src: "https://pic2.zhimg.com/da8e974dc_xll.jpg" });
-      console.log(this.$refs.uploadPic.value);
+      console.log("s");
+      let pic = this.$refs.uploadPic.files[0];
+      console.log(pic);
+      let xhr = new XMLHttpRequest();
+      xhr.open("POST", "/uploadFile", true);
+      xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            console.log("suc");
+          }
+        }
+      };
+      var fd = new FormData();
+      fd.append("file", pic);
+      xhr.send(fd);
+
+      xhr.send(pic);
     },
     publish: function() {
-      console.log("");
+      let content = this.$refs.content.internalValue;
+      let tags = this.$refs.tags.internalValue;
+      let classify = this.$refs.classify.internalValue;
+      axios
+        .post("/publishIdea", {
+          content: content,
+          tags: tags,
+          classify: classify,
+          imgs: this.pics
+        })
+        .then()
+        .catch();
     },
     cancel: function() {
       this.$refs.ideaForm.reset();
@@ -258,10 +330,10 @@ export default {
       this.overlay = false;
     }
   },
-  mounted() {
+  mounted: function() {
     axios
-      .get("/homePage")
-      .then(function(res) {
+      .get("/homepage?page=0")
+      .then(res => {
         console.log(res);
       })
       .catch();
@@ -350,32 +422,11 @@ export default {
     grid-column-end: 3;
     align-items: center;
   }
-
-  .dialog-card {
-    display: grid;
-    grid-template-rows: 4fr 2fr 1fr 1fr;
-    grid-template-columns: 1fr 4fr 1fr 1fr;
-    grid-column-gap: 3%;
-    grid-row-gap: 3%;
-
-    .card-1 {
-      grid-row-start: 1;
-      grid-row-end: 2;
-      grid-column-start: 1;
-      grid-column-end: 4;
-    }
-    .card-2 {
-      grid-row-start: 1;
-      grid-row-end: 2;
-      grid-column-start: 1;
-      grid-column-end: 4;
-    }
-    .card-3 {
-      grid-row-start: 1;
-      grid-row-end: 2;
-      grid-column-start: 1;
-      grid-column-end: 4;
-    }
-  }
+}
+.combobox-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 </style>

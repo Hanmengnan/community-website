@@ -66,7 +66,6 @@ export default {
         })
         .then(res => {
           // 跳转并保存Cookie
-          console.log(res);
           window.localStorage.setItem("userAvatar", res.data.avatarUrl);
           this.$router.push("/");
         })

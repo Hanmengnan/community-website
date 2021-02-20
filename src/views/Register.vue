@@ -51,16 +51,16 @@ export default {
     register: function() {
       axios
         .post("/register", {
-          username: this.items.username.value,
+          userName: this.items.username.value,
           email: this.items.email.value,
           password: this.items.password.value,
           repassword: this.items.repassword.value
         })
-        .then(function(res) {
-          if (res.data.code === "200") {
-            this.$router.push("/login");
-          } else if (res.data.code === "500") {
-            alert(res.data.code);
+        .then(res => {
+          // 跳转
+          console.log(res);
+          if (res.data.code === 200) {
+            this.$router.push({ path: "/login" });
           }
         })
         .catch(function(err) {

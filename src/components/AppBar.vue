@@ -46,6 +46,7 @@
 import BaseInput from "@/components/BaseInput";
 import Menus from "@/components/Menus";
 import List from "@/components/List";
+import axios from "axios";
 
 export default {
   name: "AppBar",
@@ -108,7 +109,7 @@ export default {
         {
           title: "登出",
           icon: "logout",
-          link: "/logout",
+          func: this.logOut,
           alarm: false
         },
         {
@@ -152,12 +153,29 @@ export default {
         if (c.indexOf(name) === 0) return c.substring(name.length, c.length);
       }
       return "";
+    },
+    logOut: function() {
+      this.$store.state.authed = false;
+      document.cookie = "userId= ;maxAge=0";
+      document.location.reload(true);
     }
   },
   mounted() {
-    if (this.getCookie("userid") !== "") {
-      this.$store.state.authed = true;
-      this.$store.state.avatarUrl = window.localStorage.getItem("userAvatar");
+    if (this.getCookie("userId") !== "") {
+      axios
+        .get("/login")
+        .then(res => {
+          console.log(res);
+          if (res.data.code === 200) {
+            this.$store.state.authed = true;
+            this.$store.state.avatarUrl = window.localStorage.getItem(
+              "userAvatar"
+            );
+          }
+        })
+        .catch(res => {
+          console.log(res);
+        });
     }
   }
 };
