@@ -189,6 +189,7 @@ export default {
   data() {
     return {
       overlay: false,
+      pageNum: 0,
       publishButton: [
         {
           title: "发想法",
@@ -291,24 +292,19 @@ export default {
       this.overlay = true;
     },
     uploadPic: function() {
-      console.log("s");
       let pic = this.$refs.uploadPic.files[0];
-      console.log(pic);
       let xhr = new XMLHttpRequest();
       xhr.open("POST", "/uploadFile", true);
-      xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
       xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
-            console.log("suc");
+            console.log(xhr.response);
           }
         }
       };
-      var fd = new FormData();
-      fd.append("file", pic);
-      xhr.send(fd);
-
-      xhr.send(pic);
+      var formData = new FormData();
+      formData.append("pic", pic);
+      xhr.send(formData);
     },
     publish: function() {
       let content = this.$refs.content.internalValue;
@@ -328,15 +324,57 @@ export default {
       this.$refs.ideaForm.reset();
       this.pics.length = 0;
       this.overlay = false;
+    },
+    getNewContent: function() {
+      axios
+        .get("/homepage?page=" + this.pageNum++)
+        .then(res => {
+          console.log(res);
+        })
+        .catch();
+    },
+    debounce: function(func, delay) {
+      var timeOut = null;
+      return function() {
+        if (timeOut) {
+          clearTimeout(timeOut);
+        }
+        setTimeout(func, delay);
+      };
+    },
+    throttle: function(func, delay) {
+      var timeout = true;
+      return function() {
+        if (timeout) {
+          timeout = false;
+          setTimeout(() => {
+            func();
+            timeout = true;
+          }, delay);
+        } else {
+          return true;
+        }
+      };
+    },
+    isScrollBottom: function() {
+      let scrollTop =
+        document.documentElement.scrollTop || document.body.scrollTop;
+      let clientHeight = document.documentElement.clientHeight;
+      let scrollHeight = document.documentElement.scrollHeight;
+      if (scrollTop + clientHeight >= scrollHeight) {
+        this.getNewContent();
+      }
     }
   },
-  mounted: function() {
-    axios
-      .get("/homepage?page=0")
-      .then(res => {
-        console.log(res);
-      })
-      .catch();
+  created: function() {
+    window.addEventListener("scroll", this.throttle(this.isScrollBottom, 1000));
+  },
+  mounted: function() {},
+  destroyed() {
+    window.removeEventListener(
+      "scroll",
+      this.throttle(this.isScrollBottom, 1000)
+    );
   }
 };
 </script>
@@ -423,6 +461,7 @@ export default {
     align-items: center;
   }
 }
+
 .combobox-header {
   display: flex;
   justify-content: space-between;
