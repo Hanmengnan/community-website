@@ -1,18 +1,17 @@
 <template>
-  <div class="full-size cards-container">
+  <div class="full-size page-container">
     <div class="article-card">
-      <div class="post">
-        <div class="post-header">
+      <div class="content">
+        <div class="content-header">
           <v-avatar>
             <img :src="author.avatarSrc" alt="avatar" />
           </v-avatar>
-
-          <div class="post-header-info">
+          <div class="content-header-info">
             <div>{{ author.nickName }}</div>
             <div>{{ author.dataTime }}</div>
           </div>
         </div>
-        <div>
+        <div class="content-body">
           {{ articleContent }}
         </div>
         <v-carousel v-model="aimImgIndex">
@@ -38,13 +37,9 @@
             ></v-img>
           </div>
         </div>
-        <div class="post-footer">
+        <div class="content-footer">
           <v-btn small outlined rounded color="primary">{{ tag }}</v-btn>
-          <div class="post-footer-btn">
-            <v-btn depressed>
-              <v-icon left color="primary">mdi-comment-edit-outline</v-icon>
-              回复
-            </v-btn>
+          <div class="content-footer-btn">
             <v-btn depressed text>
               <v-icon left color="primary">mdi-thumb-up-outline</v-icon>
               2662
@@ -52,14 +47,14 @@
           </div>
         </div>
       </div>
-      <v-divider light></v-divider>
-      <v-card flat class="pa-2">
-        <v-card-title> 说说我的看法 </v-card-title>
+      <v-divider></v-divider>
+      <v-card flat>
+        <div class="title">说说我的看法</div>
         <v-textarea outlined></v-textarea>
-        <v-btn rounded small color="primary">发表</v-btn>
+        <v-btn block color="primary">发表</v-btn>
       </v-card>
       <v-card flat>
-        <v-card-title>全部评论</v-card-title>
+        <div class="title">全部评论</div>
         <div
           class="comment"
           v-for="(comment, index) in commentList"
@@ -78,7 +73,7 @@
             {{ comment.text }}
             <div class="comment-footer">
               <div v-text="changeTimeStamp(comment.time)"></div>
-              <v-card flat>
+              <div>
                 <v-btn depressed text v-on:click="comment.show = !comment.show">
                   <v-icon left color="primary">mdi-comment-edit-outline</v-icon>
                   回复
@@ -87,7 +82,7 @@
                   <v-icon left color="primary">mdi-thumb-up-outline</v-icon>
                   2662
                 </v-btn>
-              </v-card>
+              </div>
             </div>
           </div>
           <div class="comment-reply-input" v-if="comment.show">
@@ -110,7 +105,7 @@
                 </div>
                 <div class="comment-reply-footer">
                   <div v-text="changeTimeStamp(reply.time)"></div>
-                  <div>
+                  <div style="margin-left:10px">
                     <v-btn depressed text v-on:click="reply.show = !reply.show">
                       <v-icon left color="primary">
                         mdi-comment-edit-outline
@@ -451,7 +446,7 @@ export default {
 @import "~@/assets/css/common.less";
 @import "~@/assets/css/varibale.less";
 
-.cards-container {
+.page-container {
   display: grid;
   grid-template-columns: 10% 45% 25% 5%;
   grid-template-rows: 10fr 1fr;
@@ -463,97 +458,101 @@ export default {
     grid-row-end: 2;
     grid-column-start: 2;
     grid-column-end: 3;
-  }
-}
-
-.post {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  &-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-    padding: 20px 0 20px 0;
-    &-avatar {
-    }
-    &-info {
+    .content {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      align-items: center;
-      margin-left: 10px;
+      margin-bottom: 20px;
+      &-header {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 20px 0 20px 0;
+        &-avatar {
+        }
+        &-info {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          align-items: center;
+          margin-left: 10px;
+        }
+      }
+      &-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        &-btn {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+      }
+      .image-list {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 10px 0 10px 0;
+        .image-box {
+          margin: 0 5px 0 5px;
+        }
+        .image-picked {
+          margin: 0 3px 0 3px;
+          border: 2px solid RoyalBlue;
+        }
+      }
     }
-  }
-  .image-list {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    padding: 10px 0 10px 0;
-    .image-box {
-      margin: 0 5px 0 5px;
+    .title {
+      font-size: @default-font*3;
+      margin: 20px 0 5px 0;
     }
-    .image-picked {
-      margin: 0 3px 0 3px;
-      border: 2px solid RoyalBlue;
-    }
-  }
-  &-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    &-btn {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-  }
-}
 
-.comment,
-.comment-reply {
-  &-footer {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-  }
-  &-header {
-    padding-top: 10px;
-    &-name {
-      padding-left: 10px;
-      color: black;
+    .comment,
+    .comment-reply {
+      &-footer {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+      &-header {
+        padding-top: 10px;
+        &-name {
+          padding-left: 10px;
+          color: black;
+        }
+      }
+      .comment-reply-input {
+        padding: 0 40px 0 40px;
+      }
     }
-  }
-  .comment-reply-input {
-    padding: 0 20px 0 20px;
-  }
-}
 
-.comment {
-  .comment-header {
-    padding-top: 30px;
-  }
-  .comment-body {
-    padding: 20px 0 20px 50px;
-    font-size: @default-font;
-  }
-}
+    .comment {
+      .comment-header {
+        padding-top: 20px;
+      }
+      .comment-body {
+        padding: 20px 20px 20px 50px;
+        font-size: @default-font;
+      }
+    }
 
-.comment-reply {
-  margin: 0 30px 26px 30px;
-  padding: 0 20px 0 20px;
-  font-size: @default-font*0.9;
-  color: gray;
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
+    .comment-reply {
+      margin: 0 30px 26px 30px;
+      padding: 0 20px 0 20px;
+      font-size: @default-font*0.9;
+      color: gray;
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
 
-  .comment-reply-body {
-    padding: 0 0 20px 40px;
-  }
-  .comment-reply-footer {
-    justify-content: flex-start;
+      .comment-reply-body {
+        padding: 0 0 20px 40px;
+      }
+      .comment-reply-footer {
+        justify-content: flex-start;
+      }
+    }
   }
 }
 </style>

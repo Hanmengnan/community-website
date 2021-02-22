@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import BaseInput from "@/components/BaseInput";
+import BaseInput from "@/components/base/BaseInput";
 export default {
   name: "SecuritySetting",
   components: { BaseInput },

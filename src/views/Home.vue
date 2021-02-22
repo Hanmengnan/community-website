@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="full-size">
     <v-app-bar color="indigo" id="appbar">
       <AppBar></AppBar>
     </v-app-bar>
@@ -12,8 +12,8 @@
 
 <script>
 // @ is an alias to /src
-import AppBar from "@/components/AppBar";
-import PageFunctionButton from "@/components/PageFunctionButton";
+import AppBar from "@/components/base/AppBar";
+import PageFunctionButton from "@/components/base/PageFunctionButton";
 
 export default {
   name: "Home",
@@ -25,6 +25,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@import "~@/assets/css/common";
 .hover-button {
   position: fixed;
   bottom: 15%;

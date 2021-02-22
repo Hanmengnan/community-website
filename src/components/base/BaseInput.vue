@@ -58,8 +58,8 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@import "~@/assets/css/common";
+@import "~@/assets/css/common.less";
 .input-item {
-  width: 95%;
+  width: 100%;
 }
 </style>

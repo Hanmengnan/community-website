@@ -1,7 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Login from "@/views/Login";
-import Register from "@/views/Register";
+import Login from "@/components/loginPage/Login";
+import Register from "@/components/loginPage/Register";
 import Home from "@/views/Home";
 import NotFound from "@/views/NotFound";
 import HomePage from "@/components/homePage/HomePage";
@@ -9,6 +9,9 @@ import SelfPage from "@/components/selfPage/SelfPage";
 import ArticlePage from "@/components/articlePage/ArticlePage";
 import SecuritySetting from "@/components/selfPage/SecuritySetting";
 import SelfInfoSetting from "@/components/selfPage/SelfInfoSetting";
+import ArticlePublishPage from "@/components/publishPage/ArticlePublishPage";
+import publishPage from "@/components/publishPage/publishPage";
+import VideoPublishPage from "@/components/publishPage/VideoPublishPage";
 
 Vue.use(VueRouter);
 
@@ -52,6 +55,23 @@ const routes = [
             path: "info",
             name: "info",
             component: SelfInfoSetting
+          }
+        ]
+      },
+      {
+        path: "publish",
+        name: "publish",
+        component: publishPage,
+        children: [
+          {
+            name: "publishArticle",
+            path: "article",
+            component: ArticlePublishPage
+          },
+          {
+            name: "publishVideo",
+            path: "video",
+            component: VideoPublishPage
           }
         ]
       }

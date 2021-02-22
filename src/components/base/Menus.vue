@@ -6,9 +6,7 @@
           <slot name="avatar-content"> </slot>
         </v-avatar>
       </template>
-      <v-card>
-        <slot name="menus-content"></slot>
-      </v-card>
+      <v-card> <slot name="menus-content"></slot></v-card>
     </v-menu>
   </div>
 </template>

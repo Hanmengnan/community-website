@@ -1,51 +1,53 @@
 <template>
-  <div class="banner-container">
-    <v-btn plain color="white">
+  <div class="bar-container full-size">
+    <v-btn plain color="white" v-on:click="$router.push('/')">
       Community Demo
     </v-btn>
-    <BaseInput
-      :title="searchInfo.title"
-      :icon="searchInfo.icon"
-      :hideDetails="searchInfo.hideDetails"
-      :rounded="searchInfo.rounded"
-      :solo="searchInfo.solo"
-      :dense="searchInfo.dense"
-    ></BaseInput>
-    <div class="banner-container banner-right ">
-      <Menus>
-        <template slot="avatar-content">
-          <v-icon medium color="white">
-            {{ "mdi-" + "forum" }}
-          </v-icon>
-        </template>
-        <template slot="menus-content">
-          <List :list-items="messageMenus"></List>
-        </template>
-      </Menus>
-      <Menus>
-        <template slot="avatar-content">
-          <img
-            v-if="userState"
-            :src="avatarContent.value"
-            :alt="avatarContent.name"
-          />
-          <v-icon medium color="white" v-if="!userState">
-            {{ "mdi-" + avatarContent.value }}
-          </v-icon>
-        </template>
-        <template slot="menus-content">
-          <list v-if="userState" :list-items="signedMenus"></list>
-          <List v-if="!userState" :list-items="unsignedMenus"> </List>
-        </template>
-      </Menus>
+    <div class="bar-right">
+      <BaseInput
+        :title="searchInfo.title"
+        :icon="searchInfo.icon"
+        :hideDetails="searchInfo.hideDetails"
+        :rounded="searchInfo.rounded"
+        :solo="searchInfo.solo"
+        :dense="searchInfo.dense"
+      ></BaseInput>
+      <div class="btn-container">
+        <Menus>
+          <template slot="avatar-content">
+            <v-icon medium color="white">
+              {{ "mdi-" + "forum" }}
+            </v-icon>
+          </template>
+          <template slot="menus-content">
+            <List :list-items="messageMenus"></List>
+          </template>
+        </Menus>
+        <Menus>
+          <template slot="avatar-content">
+            <img
+              v-if="userState"
+              :src="avatarContent.value"
+              :alt="avatarContent.name"
+            />
+            <v-icon medium color="white" v-if="!userState">
+              {{ "mdi-" + avatarContent.value }}
+            </v-icon>
+          </template>
+          <template slot="menus-content">
+            <list v-if="userState" :list-items="signedMenus"></list>
+            <List v-if="!userState" :list-items="unsignedMenus"> </List>
+          </template>
+        </Menus>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import BaseInput from "@/components/BaseInput";
-import Menus from "@/components/Menus";
-import List from "@/components/List";
+import BaseInput from "@/components/base/BaseInput";
+import Menus from "@/components/base/Menus";
+import List from "@/components/base/List";
 import axios from "axios";
 
 export default {
@@ -145,15 +147,6 @@ export default {
     }
   },
   methods: {
-    getCookie: function(cname) {
-      let name = cname + "=";
-      let ca = document.cookie.split(";");
-      for (let i = 0; i < ca.length; i++) {
-        let c = ca[i].trim();
-        if (c.indexOf(name) === 0) return c.substring(name.length, c.length);
-      }
-      return "";
-    },
     logOut: function() {
       this.$store.state.authed = false;
       document.cookie = "userId= ;maxAge=0";
@@ -182,15 +175,14 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.banner-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  .banner-right {
-    width: 8%;
+@import "~@/assets/css/common";
+.bar-container:extend(.flex-layout) {
+  .bar-right:extend(.flex-layout) {
+    width: 25%;
+    .btn-container:extend(.flex-layout) {
+      width: 40%;
+      margin-left: 8%;
+    }
   }
 }
 </style>
