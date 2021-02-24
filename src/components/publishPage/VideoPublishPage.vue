@@ -7,7 +7,7 @@
           <input
             type="file"
             id="upload-pic"
-            accept="image/*"
+            accept="video/*"
             style="display: none;"
             multiple="multiple"
             ref="uploadPic"
@@ -93,6 +93,24 @@ export default {
         tags: []
       }
     };
+  },
+  methods: {
+    uploadPic: function() {
+      let file = this.$refs.uploadPic.files[0];
+      let xhr = new XMLHttpRequest();
+      xhr.open("POST", "/uploadFile", true);
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            console.log(xhr.response);
+          }
+        }
+      };
+      var formData = new FormData();
+      formData.append("file", file);
+      formData.append("type", String(file.name).split(".")[1]);
+      xhr.send(formData);
+    }
   }
 };
 </script>

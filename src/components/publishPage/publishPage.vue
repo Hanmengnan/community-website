@@ -24,7 +24,6 @@ export default {
   },
   created() {
     if (this.$route.path === "/publish/article") {
-      console.log(this.$route.path);
       this.aimTab = 0;
     } else {
       this.aimTab = 1;

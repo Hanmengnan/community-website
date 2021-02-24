@@ -9,7 +9,7 @@
 <script></script>
 <style lang="less" scoped>
 @import "~@/assets/css/common";
-.pic-container {
+.pic-container:extend(.flex-layout) {
   justify-content: center;
 }
 .alarm-pic {

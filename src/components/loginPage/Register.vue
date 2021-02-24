@@ -6,7 +6,6 @@
 
 <script>
 import LoginPage from "@/components/loginPage/LoginPage";
-import axios from "axios";
 export default {
   components: {
     LoginPage
@@ -28,14 +27,14 @@ export default {
         },
         {
           title: "Submit",
-          action: this.login
+          action: this.register
         }
       ]
     };
   },
   methods: {
     register: function() {
-      axios
+      this.axios
         .post("/register", {
           userName: this.items.username.value,
           email: this.items.email.value,
@@ -44,7 +43,6 @@ export default {
         })
         .then(res => {
           // 跳转
-          console.log(res);
           if (res.data.code === 200) {
             this.$router.push({ path: "/login" });
           }

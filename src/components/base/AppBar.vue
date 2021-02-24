@@ -48,7 +48,7 @@
 import BaseInput from "@/components/base/BaseInput";
 import Menus from "@/components/base/Menus";
 import List from "@/components/base/List";
-import axios from "axios";
+import { getCookie } from "@/assets/js/GlobalFunction";
 
 export default {
   name: "AppBar",
@@ -115,15 +115,9 @@ export default {
           alarm: false
         },
         {
-          title: "个人中心",
-          icon: "account-details",
-          link: "/self",
-          alarm: true
-        },
-        {
           title: "个人设置",
           icon: "account-cog",
-          link: "/self/setting",
+          link: "/self/setting/security",
           alarm: true
         }
       ]
@@ -154,11 +148,10 @@ export default {
     }
   },
   mounted() {
-    if (this.getCookie("userId") !== "") {
-      axios
+    if (getCookie("userId") !== "") {
+      this.axios
         .get("/login")
         .then(res => {
-          console.log(res);
           if (res.data.code === 200) {
             this.$store.state.authed = true;
             this.$store.state.avatarUrl = window.localStorage.getItem(

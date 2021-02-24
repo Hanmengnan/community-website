@@ -17,7 +17,6 @@
 
 <script>
 import LoginPage from "@/components/loginPage/LoginPage";
-import axios from "axios";
 export default {
   name: "Login",
   components: {
@@ -47,10 +46,9 @@ export default {
   },
   methods: {
     login: function() {
-      axios
+      this.axios
         .post("/login", {
           username: this.items.username.value,
-          email: this.items.email.value,
           password: this.items.password.value
         })
         .then(res => {

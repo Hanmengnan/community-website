@@ -174,7 +174,7 @@
 <script>
 import ArticleCard from "@/components/homePage/ArticleCard";
 import Pagination from "@/components/base/Pagination";
-import axios from "axios";
+import { throttle } from "@/assets/js/GlobalFunction";
 
 export default {
   name: "HomePage",
@@ -320,7 +320,7 @@ export default {
       let content = this.$refs.content.internalValue;
       let tags = this.$refs.tags.internalValue;
       let classify = this.$refs.classify.internalValue;
-      axios
+      this.axios
         .post("/publishIdea", {
           content: content,
           tags: tags,
@@ -336,7 +336,7 @@ export default {
       this.overlay = false;
     },
     getNewContent: function() {
-      axios
+      this.axios
         .get("/homepage?page=" + this.pageNum++)
         .then(res => {
           console.log(res);
@@ -355,14 +355,11 @@ export default {
     }
   },
   created: function() {
-    window.addEventListener("scroll", this.throttle(this.isScrollBottom, 1000));
+    window.addEventListener("scroll", throttle(this.isScrollBottom, 1000));
   },
   mounted: function() {},
   destroyed() {
-    window.removeEventListener(
-      "scroll",
-      this.throttle(this.isScrollBottom, 1000)
-    );
+    window.removeEventListener("scroll", throttle(this.isScrollBottom, 1000));
   }
 };
 </script>

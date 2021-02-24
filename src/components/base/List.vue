@@ -33,7 +33,7 @@ export default {
   },
   methods: {
     toHref: function(link) {
-      this.$router.push({ path: link });
+      this.$router.push(link);
     },
     operate: function(link, func) {
       if (link !== undefined) {

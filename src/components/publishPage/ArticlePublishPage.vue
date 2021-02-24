@@ -7,7 +7,12 @@
         solo-inverted
       ></v-text-field>
     </div>
-    <mavon-editor class="content-edit-area"></mavon-editor>
+    <mavon-editor
+      class="content-edit-area"
+      codeStyle="magula"
+      ref="md"
+      @imgAdd="$imgAdd"
+    ></mavon-editor>
     <div class="feature-edit-area">
       <div class="feature-set">
         <div class="setting-title">
@@ -122,6 +127,28 @@ export default {
         tags: []
       }
     };
+  },
+  methods: {
+    $imgAdd(pos, $file) {
+      // 第一步.将图片上传到服务器.
+      var formdata = new FormData();
+      formdata.append("file", $file);
+      formdata.append("type", String($file.name).split(".")[1]);
+      this.axios({
+        url: "/uploadFile",
+        method: "post",
+        data: formdata,
+        headers: { "Content-Type": "multipart/form-data" }
+      }).then(res => {
+        // 第二步.将返回的url替换到文本原位置![...](0) -> ![...](url)
+        /**
+         * $vm 指为mavonEditor实例，可以通过如下两种方式获取
+         * 1. 通过引入对象获取: `import {mavonEditor} from ...` 等方式引入后，`$vm`为`mavonEditor`
+         * 2. 通过$refs获取: html声明ref : `<mavon-editor ref=md ></mavon-editor>，`$vm`为 ``
+         */
+        this.$refs.md.$img2Url(pos, res.data);
+      });
+    }
   }
 };
 </script>
