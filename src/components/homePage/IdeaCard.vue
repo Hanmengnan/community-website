@@ -1,6 +1,6 @@
 <template>
   <div class="article-container full-size">
-    <div>{{ subTitle }}</div>
+    <div class="article-content">{{ content }}</div>
     <div class="pic-area">
       <img
         class="pic"
@@ -17,7 +17,7 @@
 export default {
   name: "ArticleCard",
   props: {
-    subTitle: {
+    content: {
       type: String,
       required: true
     },
@@ -36,9 +36,14 @@ export default {
 
 <style lang="less" scoped>
 @import "~@/assets/css/common";
+@import "~@/assets/css/varibale";
 .article-container:extend(.flex-layout) {
   flex-direction: column;
   align-items: flex-start;
+  .article-content {
+    color: @default-font-color;
+    font-size: @default-font;
+  }
   .pic-area {
     display: flex;
     flex-wrap: wrap;

@@ -7,6 +7,24 @@ export function getCookie(cname) {
   }
   return "";
 }
+
+export function uploadFile(file) {
+  let xhr = new XMLHttpRequest();
+  xhr.open("POST", "/uploadFile", true);
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4) {
+      if (xhr.status === 200) {
+        console.log(xhr.response);
+        return xhr.response;
+      }
+      return "";
+    }
+  };
+  let formData = new FormData();
+  formData.append("file", file);
+  xhr.send(formData);
+}
+
 export function debounce(func, delay) {
   let timeOut = null;
   return function() {

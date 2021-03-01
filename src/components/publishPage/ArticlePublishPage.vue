@@ -2,12 +2,22 @@
   <div class="publish-container full-size">
     <div class="title-edit-area">
       <v-text-field
+        ref="title"
         label="输入文章标题"
         hideDetails
         solo-inverted
       ></v-text-field>
     </div>
+    <div class="title-edit-area">
+      <v-text-field
+        ref="subTitle"
+        label="输入文章摘要"
+        hideDetails
+        solo-inverted
+      ></v-text-field>
+    </div>
     <mavon-editor
+      v-model="articleContent"
       class="content-edit-area"
       codeStyle="magula"
       ref="md"
@@ -18,7 +28,7 @@
         <div class="setting-title">
           设置封面
         </div>
-        <div>
+        <div style="margin-right: 30px ">
           <v-avatar color="blue-grey lighten-4" size="80" rounded>
             <label for="upload-pic" class="full-size">
               <v-icon x-large>mdi-plus</v-icon>
@@ -34,12 +44,10 @@
             </label>
           </v-avatar>
         </div>
-        <div v-for="(pic, index) in pics" :key="index">
+        <div>
           <v-img
-            v-for="(pic, index) in pics"
-            :key="index"
-            :src="pic.src"
-            :lazy-src="pic.src"
+            :src="cover.src"
+            :lazy-src="cover.src"
             width="80"
             height="80"
           ></v-img>
@@ -121,7 +129,8 @@ export default {
   },
   data() {
     return {
-      pics: [],
+      cover: "",
+      articleContent: "",
       publishIdea: {
         classify: ["琐碎吐槽", "感悟思考", "学习点滴", "仅是记录", "我不知道"],
         tags: []
@@ -148,6 +157,43 @@ export default {
          */
         this.$refs.md.$img2Url(pos, res.data);
       });
+    },
+    uploadPic: function() {
+      let pic = this.$refs.uploadPic.files[0];
+      let xhr = new XMLHttpRequest();
+      xhr.open("POST", "/uploadFile", true);
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            this.cover = { src: JSON.parse(xhr.response).fileURL };
+          }
+          return "";
+        }
+      }.bind(this);
+      let formData = new FormData();
+      formData.append("file", pic);
+      xhr.send(formData);
+    },
+    publish: function() {
+      let createTime = new Date().getTime();
+      let articleContent = this.articleContent;
+      let title = this.$refs.title.internalValue;
+      let subTitle = this.$refs.subTitle.internalValue;
+      let tags = this.$refs.tags.internalValue;
+      let classify = this.$refs.classify.internalValue;
+
+      this.axios
+        .post("/publishArticle", {
+          title: title,
+          subTitle: subTitle,
+          createTime: createTime,
+          articleContent: articleContent,
+          tags: tags,
+          classify: classify,
+          cover: this.cover
+        })
+        .then()
+        .catch();
     }
   }
 };
@@ -163,7 +209,7 @@ export default {
     box-sizing: border-box;
     align-items: flex-start;
     width: 100%;
-    margin: 10px 0 10px 0;
+    margin: 3px 0 3px 0;
   }
   .content-edit-area {
     width: 100%;

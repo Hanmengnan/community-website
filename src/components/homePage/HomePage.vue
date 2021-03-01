@@ -1,15 +1,29 @@
 <template>
   <div class="full-size pages-container">
-    <template v-for="(article, index) in articleList">
-      <ArticleCard
+    <template v-for="(item, index) in publishList">
+      <publish-card
+        :title="item.title"
+        :authorName="item.authorName"
+        :avatarUrl="item.avatarUrl"
+        :tags="item.tags"
+        :classify="item.classify"
         :class="['page-card', 'card-' + (index + 1)]"
-        :title="article.title"
-        :sub-tile="article.subTitle"
-        :author="article.author"
-        :time="article.time"
-        :tags="article.tags"
         :key="index"
-      ></ArticleCard>
+      >
+        <template slot="body">
+          <idea-card
+            :content="item.content"
+            :pics="item.pics"
+            v-if="item.type === 0"
+          ></idea-card>
+          <video-card v-if="item.type === 1"></video-card>
+          <article-card
+            :sub-title="item.subTitle"
+            :pics="item.pics"
+            v-if="item.type === 2"
+          ></article-card>
+        </template>
+      </publish-card>
     </template>
     <div class="side-container">
       <v-card class="publish-container">
@@ -92,8 +106,6 @@
               </v-col>
               <v-col v-for="(pic, index) in pics" :key="index" md="2">
                 <v-img
-                  v-for="(pic, index) in pics"
-                  :key="index"
                   :src="pic.src"
                   :lazy-src="pic.src"
                   width="80"
@@ -175,10 +187,16 @@
 import ArticleCard from "@/components/homePage/ArticleCard";
 import Pagination from "@/components/base/Pagination";
 import { throttle } from "@/assets/js/GlobalFunction";
+import VideoCard from "@/components/homePage/VideoCard";
+import PublishCard from "@/components/homePage/PublishCard";
+import IdeaCard from "@/components/homePage/IdeaCard";
 
 export default {
   name: "HomePage",
   components: {
+    IdeaCard,
+    PublishCard,
+    VideoCard,
     ArticleCard,
     Pagination
   },
@@ -210,41 +228,57 @@ export default {
           }
         }
       ],
-      articleList: [
+      publishList: [
         {
+          type: 0,
           title: "测试",
-          subTitle: "第一篇测试",
-          author: "siegelion",
-          time: "2021/02/07 20:47",
-          tags: ["测试", "测试", "测试", "测试"]
+          authorName: "siegelion",
+          avatarUrl: "http://kodo.wendau.com/icon1.png",
+          tags: ["说说", "说说", "说说"],
+          classify: "想法",
+          content:
+            "MIUI不断的迭代更新，越来越强大，越来越好用了。深色模式目前已更新到2.0版本。\n" +
+            "2.0版本的深色模式有如下特色：\n" +
+            "\n" +
+            "① 全局覆盖：42个系统应用深度适配，20个主流应用深度定制；\n" +
+            "② 强大的非线性反色算法，精准识别界面元素，针对每个界面对象动态反色，海量第三方应用现已支持非线性反色算法；\n" +
+            "③ 反色算法基于Lab、HSV色彩空间，适配更广更自然。",
+          pics: [
+            "http://kodo.wendau.com/%E7%9B%B8%E4%BF%A1%E6%9C%AA%E6%9D%A5.jpg",
+            "http://kodo.wendau.com/icon1.png",
+            "http://kodo.wendau.com/%E7%9B%B8%E4%BF%A1%E6%9C%AA%E6%9D%A5.jpg",
+            "http://kodo.wendau.com/%E7%9B%B8%E4%BF%A1%E6%9C%AA%E6%9D%A5.jpg",
+            "http://kodo.wendau.com/%E9%A2%9C%E8%89%B23.jpg"
+          ]
         },
         {
+          type: 1,
           title: "测试",
-          subTitle: "第一篇测试",
-          author: "siegelion",
-          time: "2021/02/07 20:47",
-          tags: ["测试", "测试", "测试", "测试"]
+          authorName: "siegelion",
+          avatarUrl: "http://kodo.wendau.com/icon1.png",
+          tags: ["视频", "说说", "说说"],
+          classify: "视频",
+          cover: "http://kodo.wendau.com/icon1.png"
         },
         {
+          type: 2,
           title: "测试",
-          subTitle: "第一篇测试",
-          author: "siegelion",
-          time: "2021/02/07 20:47",
-          tags: ["测试", "测试", "测试", "测试"]
-        },
-        {
-          title: "测试",
-          subTitle: "第一篇测试",
-          author: "siegelion",
-          time: "2021/02/07 20:47",
-          tags: ["测试", "测试", "测试", "测试"]
-        },
-        {
-          title: "测试",
-          subTitle: "第一篇测试",
-          author: "siegelion",
-          time: "2021/02/07 20:47",
-          tags: ["测试", "测试", "测试", "测试"]
+          subTitle:
+            "MIUI不断的迭代更新，越来越强大，越来越好用了。深色模式目前已更新到2.0版本。\n" +
+            "2.0版本的深色模式有如下特色：\n" +
+            "\n" +
+            "① 全局覆盖：42个系统应用深度适配，20个主流应用深度定制；\n" +
+            "② 强大的非线性反色算法，精准识别界面元素，针对每个界面对象动态反色，海量第三方应用现已支持非线性反色算法；\n" +
+            "③ 反色算法基于Lab、HSV色彩空间，适配更广更自然。",
+          authorName: "siegelion",
+          avatarUrl: "http://kodo.wendau.com/icon1.png",
+          tags: ["文章", "说说", "说说"],
+          classify: "文章",
+          pics: [
+            "http://kodo.wendau.com/icon1.png",
+            "http://kodo.wendau.com/icon1.png",
+            "http://kodo.wendau.com/icon1.png"
+          ]
         }
       ],
       tags: [
@@ -308,21 +342,25 @@ export default {
       xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
-            console.log(xhr.response);
+            this.pics.push({ src: JSON.parse(xhr.response).fileURL });
           }
+          return "";
         }
-      };
-      var formData = new FormData();
-      formData.append("pic", pic);
+      }.bind(this);
+      let formData = new FormData();
+      formData.append("file", pic);
       xhr.send(formData);
     },
     publish: function() {
+      let createTime = new Date().getTime();
       let content = this.$refs.content.internalValue;
       let tags = this.$refs.tags.internalValue;
       let classify = this.$refs.classify.internalValue;
+      console.log(content, tags, classify);
       this.axios
         .post("/publishIdea", {
-          content: content,
+          createTime: createTime,
+          ideaContent: content,
           tags: tags,
           classify: classify,
           imgs: this.pics
@@ -370,7 +408,7 @@ export default {
 .pages-container {
   display: grid;
   grid-template-columns: 10% 45% 25% 5%;
-  grid-template-rows: 1.5fr repeat(5, 3fr) 2fr;
+  grid-template-rows: 1fr repeat(3, 5fr) 2fr;
   grid-row-gap: 2%;
   grid-column-gap: 5%;
 
@@ -380,7 +418,7 @@ export default {
     justify-content: space-between;
     align-items: flex-start;
     width: 60vw;
-    height: 30vh;
+    height: 60vh;
   }
 
   .loop(@counter) when (@counter<=7) {
@@ -397,7 +435,7 @@ export default {
   .side-container {
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 15% 25% 50%;
+    grid-template-rows: 10% 20% 30%;
     grid-row-gap: 3%;
 
     grid-column-start: 3;
@@ -431,8 +469,8 @@ export default {
   }
 
   .pagination {
-    grid-row-start: 7;
-    grid-row-end: 8;
+    grid-row-start: 5;
+    grid-row-end: 6;
     grid-column-start: 2;
     grid-column-end: 3;
     align-items: center;

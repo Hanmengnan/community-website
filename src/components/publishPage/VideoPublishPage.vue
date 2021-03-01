@@ -1,20 +1,26 @@
 <template>
   <div class="publish-container ">
-    <div>
-      <v-avatar color="blue-grey lighten-4" size="80" rounded>
-        <label for="upload-pic" class="full-size">
-          <v-icon x-large>mdi-plus</v-icon>
-          <input
-            type="file"
-            id="upload-pic"
-            accept="video/*"
-            style="display: none;"
-            multiple="multiple"
-            ref="uploadPic"
-            v-on:change="uploadPic()"
-          />
-        </label>
-      </v-avatar>
+    <div class="upload-area">
+      <label for="upload-pic" class="upload-area-label">
+        <v-icon class="upload-area-icon" x-large>mdi-plus</v-icon>
+      </label>
+      <input
+        type="file"
+        id="upload-pic"
+        accept="video/*"
+        style="display: none;"
+        multiple="multiple"
+        ref="uploadPic"
+        v-on:change="uploadPic()"
+      />
+    </div>
+    <div class="title-edit-area">
+      <v-text-field
+        ref="subTitle"
+        label="输入文章摘要"
+        hideDetails
+        solo-inverted
+      ></v-text-field>
     </div>
     <div class="feature-edit-area">
       <div class="feature-set">
@@ -106,7 +112,7 @@ export default {
           }
         }
       };
-      var formData = new FormData();
+      let formData = new FormData();
       formData.append("file", file);
       formData.append("type", String(file.name).split(".")[1]);
       xhr.send(formData);
@@ -121,19 +127,41 @@ export default {
   position: relative;
   flex-direction: column;
   justify-content: space-around;
-  height: 30%;
-  border: gray dashed 3px;
+  height: 50%;
   margin: 30px 50px 0 50px;
-
+  .upload-area {
+    position: relative;
+    width: 95%;
+    height: 50%;
+    margin: 2%;
+    border: gray solid 0.5px;
+    .upload-area-label {
+      display: inline-block;
+      width: 100%;
+      height: 100%;
+      .upload-area-icon {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+      }
+    }
+  }
+  .title-edit-area {
+    width: 95%;
+    height: 10%;
+  }
   .feature-edit-area:extend(.flex-layout) {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: space-between;
-    width: 60%;
-    height: 40%;
+    width: 95%;
+    height: 15%;
     .feature-set:extend(.flex-layout) {
       flex-direction: column;
-      width: 50%;
+      width: 48%;
 
       .setting-value {
         width: 100%;
@@ -141,7 +169,7 @@ export default {
     }
   }
   .publish-btn {
-    width: 30%;
+    width: 40%;
   }
 }
 </style>
