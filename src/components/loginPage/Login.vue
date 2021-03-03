@@ -46,11 +46,11 @@ export default {
   },
   methods: {
     login: function() {
+      let formData = new FormData();
+      formData.append("username", this.items.username.value);
+      formData.append("password", this.items.password.value);
       this.axios
-        .post("/login", {
-          username: this.items.username.value,
-          password: this.items.password.value
-        })
+        .post("/login", formData)
         .then(res => {
           // 跳转并保存Cookie
           window.localStorage.setItem("userAvatar", res.data.avatarUrl);

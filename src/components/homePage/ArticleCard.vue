@@ -2,13 +2,14 @@
   <div class="article-container full-size">
     <div>{{ subTitle }}</div>
     <div class="pic-area">
-      <img
-        class="pic"
-        v-for="(pic, index) in pics"
-        :key="index"
-        :src="pic"
-        alt="图像"
-      />
+      <img class="cover" :src="cover" alt="cover" />
+      <!--      <img-->
+      <!--        class="pic"-->
+      <!--        v-for="(pic, index) in pics"-->
+      <!--        :key="index"-->
+      <!--        :src="pic"-->
+      <!--        alt="图像"-->
+      <!--      />-->
     </div>
   </div>
 </template>
@@ -23,6 +24,10 @@ export default {
     },
     pics: {
       type: Array,
+      required: true
+    },
+    cover: {
+      type: String,
       required: true
     }
   },
@@ -44,6 +49,10 @@ export default {
     flex-wrap: wrap;
     width: 100%;
     height: 70%;
+    .cover{
+      max-width: 35vw;
+      max-height: 25vh;
+    }
     .pic {
       max-width: 13vw;
       max-height: 13vh;

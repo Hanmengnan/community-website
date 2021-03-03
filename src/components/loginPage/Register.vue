@@ -34,13 +34,14 @@ export default {
   },
   methods: {
     register: function() {
+      let formData = new FormData();
+      formData.append("userName", this.items.username.value);
+      formData.append("email", this.items.email.value);
+      formData.append("password", this.items.password.value);
+      formData.append("repassword", this.items.repassword.value);
+
       this.axios
-        .post("/register", {
-          userName: this.items.username.value,
-          email: this.items.email.value,
-          password: this.items.password.value,
-          repassword: this.items.repassword.value
-        })
+        .post("/register", formData)
         .then(res => {
           // 跳转
           if (res.data.code === 200) {

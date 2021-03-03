@@ -1,6 +1,6 @@
 <template>
   <div class="publish-container ">
-    <div class="upload-area">
+    <div class="upload-area" v-if="!uploaded">
       <label for="upload-pic" class="upload-area-label">
         <v-icon class="upload-area-icon" x-large>mdi-plus</v-icon>
       </label>
@@ -12,6 +12,13 @@
         multiple="multiple"
         ref="uploadPic"
         v-on:change="uploadPic()"
+      />
+    </div>
+    <div class="upload-area" v-if="uploaded">
+      <img
+        class="video-cover"
+        :src="videoURL + '?vframe/jpg/offset/1'"
+        alt="cover"
       />
     </div>
     <div class="title-edit-area">
@@ -93,7 +100,8 @@ export default {
   name: "VideoPublishPage",
   data() {
     return {
-      pics: [],
+      videoURL: "",
+      uploaded: false,
       publishIdea: {
         classify: ["琐碎吐槽", "感悟思考", "学习点滴", "仅是记录", "我不知道"],
         tags: []
@@ -108,14 +116,28 @@ export default {
       xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
-            console.log(xhr.response);
+            this.videoURL = JSON.parse(xhr.response).fileURL;
+            this.uploaded = true;
           }
         }
-      };
+      }.bind(this);
       let formData = new FormData();
       formData.append("file", file);
       formData.append("type", String(file.name).split(".")[1]);
       xhr.send(formData);
+    },
+    publish: function() {
+      let formData = new FormData();
+      formData.append("createTime", new Date().getTime());
+      formData.append("tags", JSON.stringify(this.$refs.tags.internalValue));
+      formData.append("classify", this.$refs.classify.internalValue);
+      formData.append("videoUrl", this.videoURL);
+      console.log(formData);
+
+      this.axios
+        .post("/publishVideo", formData)
+        .then()
+        .catch();
     }
   }
 };
@@ -129,12 +151,17 @@ export default {
   justify-content: space-around;
   height: 50%;
   margin: 30px 50px 0 50px;
+
   .upload-area {
     position: relative;
     width: 95%;
     height: 50%;
     margin: 2%;
     border: gray solid 0.5px;
+    .video-cover {
+      width: 100%;
+      height: 100%;
+    }
     .upload-area-label {
       display: inline-block;
       width: 100%;

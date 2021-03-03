@@ -20,6 +20,7 @@
           <article-card
             :sub-title="item.subTitle"
             :pics="item.pics"
+            :cover="item.cover"
             v-if="item.type === 2"
           ></article-card>
         </template>
@@ -106,8 +107,8 @@
               </v-col>
               <v-col v-for="(pic, index) in pics" :key="index" md="2">
                 <v-img
-                  :src="pic.src"
-                  :lazy-src="pic.src"
+                  :src="pic"
+                  :lazy-src="pic"
                   width="80"
                   height="80"
                 ></v-img>
@@ -278,7 +279,9 @@ export default {
             "http://kodo.wendau.com/icon1.png",
             "http://kodo.wendau.com/icon1.png",
             "http://kodo.wendau.com/icon1.png"
-          ]
+          ],
+          cover:
+            "http://kodo.wendau.com/%E7%9B%B8%E4%BF%A1%E6%9C%AA%E6%9D%A5.jpg"
         }
       ],
       tags: [
@@ -342,7 +345,7 @@ export default {
       xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
-            this.pics.push({ src: JSON.parse(xhr.response).fileURL });
+            this.pics.push(JSON.parse(xhr.response).fileURL);
           }
           return "";
         }
@@ -352,19 +355,16 @@ export default {
       xhr.send(formData);
     },
     publish: function() {
-      let createTime = new Date().getTime();
-      let content = this.$refs.content.internalValue;
-      let tags = this.$refs.tags.internalValue;
-      let classify = this.$refs.classify.internalValue;
-      console.log(content, tags, classify);
+      let formData = new FormData();
+      formData.append("createTime", new Date().getTime());
+      formData.append("content", this.$refs.content.internalValue);
+      formData.append("tags", JSON.stringify(this.$refs.tags.internalValue));
+      formData.append("classify", this.$refs.classify.internalValue);
+      console.log(this.pics);
+      formData.append("pics", this.pics);
+
       this.axios
-        .post("/publishIdea", {
-          createTime: createTime,
-          ideaContent: content,
-          tags: tags,
-          classify: classify,
-          imgs: this.pics
-        })
+        .post("/publishIdea", formData)
         .then()
         .catch();
     },
