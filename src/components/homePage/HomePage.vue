@@ -55,7 +55,7 @@
             <v-icon left small>
               mdi-pound
             </v-icon>
-            {{ item.name }}
+            {{ item }}
           </v-chip>
         </v-card-text>
       </v-card>
@@ -191,6 +191,7 @@ import { throttle } from "@/assets/js/GlobalFunction";
 import VideoCard from "@/components/homePage/VideoCard";
 import PublishCard from "@/components/homePage/PublishCard";
 import IdeaCard from "@/components/homePage/IdeaCard";
+import axios from "axios";
 
 export default {
   name: "HomePage",
@@ -205,6 +206,7 @@ export default {
     return {
       overlay: false,
       pageNum: 0,
+      pics: [],
       publishButton: [
         {
           title: "发想法",
@@ -284,32 +286,11 @@ export default {
             "http://kodo.wendau.com/%E7%9B%B8%E4%BF%A1%E6%9C%AA%E6%9D%A5.jpg"
         }
       ],
-      tags: [
-        {
-          name: "说说"
-        },
-        {
-          name: "哈哈"
-        },
-        {
-          name: "测试"
-        },
-        {
-          name: "日常"
-        },
-        {
-          name: "说点什么"
-        },
-        {
-          name: "就这样"
-        },
-        {
-          name: "就这样"
-        },
-        {
-          name: "就这样"
-        }
-      ],
+      publishIdea: {
+        classify: ["琐碎吐槽", "感悟思考", "学习点滴", "仅是记录", "我不知道"],
+        tags: []
+      },
+      tags: [],
       articles: [
         {
           title: "Debug模式和Release模式有什么区别？"
@@ -327,11 +308,7 @@ export default {
           title: "Debug模式和Release模式有什么区别？"
         }
       ],
-      pics: [],
-      publishIdea: {
-        classify: ["琐碎吐槽", "感悟思考", "学习点滴", "仅是记录", "我不知道"],
-        tags: []
-      }
+      scrollFunc: null
     };
   },
   methods: {
@@ -381,7 +358,6 @@ export default {
         })
         .catch();
     },
-
     isScrollBottom: function() {
       let scrollTop =
         document.documentElement.scrollTop || document.body.scrollTop;
@@ -393,11 +369,21 @@ export default {
     }
   },
   created: function() {
-    window.addEventListener("scroll", throttle(this.isScrollBottom, 1000));
+    this.scrollThrottle = throttle(this.isScrollBottom, 1000);
+    window.addEventListener("scroll", this.scrollThrottle);
   },
-  mounted: function() {},
+  mounted: function() {
+    axios
+      .get("/tags")
+      .then(
+        function(res) {
+          this.tags = res.data.tagList;
+        }.bind(this)
+      )
+      .catch();
+  },
   destroyed() {
-    window.removeEventListener("scroll", throttle(this.isScrollBottom, 1000));
+    window.removeEventListener("scroll", this.scrollThrottle);
   }
 };
 </script>
