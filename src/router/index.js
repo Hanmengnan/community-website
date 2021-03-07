@@ -15,6 +15,7 @@ import VideoPublishPage from "@/components/publishPage/VideoPublishPage";
 import SelfPageBody from "@/components/selfPage/SelfPageBody";
 import FocusUser from "@/components/selfPage/focus/FocusUser";
 import FocusTag from "@/components/selfPage/focus/FocusTag";
+import PublishPage from "@/components/homePage/PublishPage";
 
 Vue.use(VueRouter);
 
@@ -43,6 +44,11 @@ const routes = [
         path: "post",
         name: "post",
         component: ArticlePage
+      },
+      {
+        path: "tagQuery/:tagName",
+        name: "tagQuery",
+        component: PublishPage
       },
       {
         path: "publish",

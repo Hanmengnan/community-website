@@ -83,7 +83,7 @@ export default {
         {
           title: "我的关注",
           icon: "eye-outline",
-          link: "/self/notifications/focus",
+          link: "/self/focus",
           alarm: false
         }
       ],

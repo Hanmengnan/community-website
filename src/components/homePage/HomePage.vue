@@ -1,31 +1,43 @@
 <template>
   <div class="full-size pages-container">
-    <template v-for="(item, index) in publishList">
-      <publish-card
-        :title="item.title"
-        :authorName="item.authorName"
-        :avatarUrl="item.avatarUrl"
-        :tags="item.tags"
-        :classify="item.classify"
-        :class="['page-card', 'card-' + (index + 1)]"
-        :key="index"
-      >
-        <template slot="body">
-          <idea-card
-            :content="item.content"
-            :pics="item.pics"
-            v-if="item.type === 0"
-          ></idea-card>
-          <video-card v-if="item.type === 1"></video-card>
-          <article-card
-            :sub-title="item.subTitle"
-            :pics="item.pics"
-            :cover="item.cover"
-            v-if="item.type === 2"
-          ></article-card>
-        </template>
-      </publish-card>
-    </template>
+    <div class="content-container">
+      <template v-for="(item, index) in publishList">
+        <publish-card
+          :title="item.title"
+          :authorName="item.authorName"
+          :avatarUrl="item.avatarUrl"
+          :tags="item.tags"
+          :classify="item.classify"
+          :class="['page-card', 'card-' + (index + 1)]"
+          :key="index"
+        >
+          <template slot="body">
+            <idea-card
+              :content="item.ideaContent"
+              :pics="item.pics"
+              v-if="item.type == 1"
+            ></idea-card>
+            <video-card
+              :cover="item.videoUrl"
+              v-if="item.type === 2"
+            ></video-card>
+            <article-card
+              :sub-title="item.subTitle"
+              :pics="item.pics"
+              :cover="item.cover"
+              v-if="item.type === 0"
+            ></article-card>
+          </template>
+        </publish-card>
+      </template>
+      <div class="progress-circular" v-if="newContentFlag">
+        <v-progress-circular
+          :size="50"
+          color="primary"
+          indeterminate
+        ></v-progress-circular>
+      </div>
+    </div>
     <div class="side-container">
       <v-card class="publish-container">
         <div
@@ -47,9 +59,11 @@
           <v-chip
             small
             outlined
+            link
             color="primary"
             class="tag"
             v-for="(item, index) in tags"
+            :to="{ name: 'tagQuery', params: { tagName: item } }"
             :key="index"
           >
             <v-icon left small>
@@ -81,7 +95,6 @@
         </v-card-text>
       </v-card>
     </div>
-    <Pagination class="pagination"></Pagination>
     <v-dialog v-model="overlay" width="50%">
       <v-card>
         <v-card-title>发想法</v-card-title>
@@ -186,12 +199,10 @@
 
 <script>
 import ArticleCard from "@/components/homePage/ArticleCard";
-import Pagination from "@/components/base/Pagination";
 import { throttle } from "@/assets/js/GlobalFunction";
 import VideoCard from "@/components/homePage/VideoCard";
 import PublishCard from "@/components/homePage/PublishCard";
 import IdeaCard from "@/components/homePage/IdeaCard";
-import axios from "axios";
 
 export default {
   name: "HomePage",
@@ -199,13 +210,13 @@ export default {
     IdeaCard,
     PublishCard,
     VideoCard,
-    ArticleCard,
-    Pagination
+    ArticleCard
   },
   data() {
     return {
       overlay: false,
       pageNum: 0,
+      newContentFlag: true,
       pics: [],
       publishButton: [
         {
@@ -231,7 +242,8 @@ export default {
           }
         }
       ],
-      publishList: [
+      publishList: [],
+      publishListTemp: [
         {
           type: 0,
           title: "测试",
@@ -329,6 +341,7 @@ export default {
       }.bind(this);
       let formData = new FormData();
       formData.append("file", pic);
+      formData.append("type", String(pic.name).split(".")[1]);
       xhr.send(formData);
     },
     publish: function() {
@@ -337,8 +350,7 @@ export default {
       formData.append("content", this.$refs.content.internalValue);
       formData.append("tags", JSON.stringify(this.$refs.tags.internalValue));
       formData.append("classify", this.$refs.classify.internalValue);
-      console.log(this.pics);
-      formData.append("pics", this.pics);
+      formData.append("pics", JSON.stringify(this.pics));
 
       this.axios
         .post("/publishIdea", formData)
@@ -352,9 +364,17 @@ export default {
     },
     getNewContent: function() {
       this.axios
-        .get("/homepage?page=" + this.pageNum++)
+        .get("/homepage?page=" + this.pageNum)
         .then(res => {
-          console.log(res);
+          if (res.data.code === 200) {
+            this.publishList.push(...res.data.publishList);
+            this.pageNum++;
+            this.newContentFlag = true;
+          } else {
+            console.log(this.newContentFlag);
+            this.newContentFlag = false;
+            console.log(res.data);
+          }
         })
         .catch();
     },
@@ -373,11 +393,24 @@ export default {
     window.addEventListener("scroll", this.scrollThrottle);
   },
   mounted: function() {
-    axios
+    this.axios
       .get("/tags")
       .then(
         function(res) {
           this.tags = res.data.tagList;
+        }.bind(this)
+      )
+      .catch();
+    this.axios
+      .get("/homepage?page=0")
+      .then(
+        function(res) {
+          if (res.data.code === 200) {
+            this.publishList.push(...res.data.publishList);
+            this.pageNum++;
+          } else {
+            console.log(res.data);
+          }
         }.bind(this)
       )
       .catch();
@@ -392,42 +425,42 @@ export default {
 @import "~@/assets/css/common.less";
 
 .pages-container {
-  display: grid;
-  grid-template-columns: 10% 45% 25% 5%;
-  grid-template-rows: 1fr repeat(3, 5fr) 2fr;
-  grid-row-gap: 2%;
-  grid-column-gap: 5%;
+  display: flex;
+  justify-content: space-around;
 
-  .page-card {
+  .content-container {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    align-items: flex-start;
-    width: 60vw;
-    height: 60vh;
-  }
-
-  .loop(@counter) when (@counter<=7) {
-    .card-@{counter} {
-      grid-row-start: @counter+1;
-      grid-row-end: @counter+2;
-      grid-column-start: 2;
-      grid-column-end: 3;
+    min-width: 50vw;
+    margin-top: 30px;
+    .page-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-start;
+      width: 50vw;
+      height: 50vh;
+      margin: 30px 0 30px 0;
     }
-    .loop((@counter+1));
+    .progress-circular {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      margin: 0 0 20px 0;
+    }
   }
-  .loop(1);
 
   .side-container {
+    position: relative;
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 10% 20% 30%;
+    grid-template-rows: 10% 15% 30%;
     grid-row-gap: 3%;
 
-    grid-column-start: 3;
-    grid-column-end: 4;
-    grid-row-start: 2;
-    grid-row-end: 5;
+    width: 25%;
+    height: 150vh;
+    margin-top: 60px;
     justify-items: center;
 
     .publish-container:extend(.flex-layout) {
@@ -455,10 +488,6 @@ export default {
   }
 
   .pagination {
-    grid-row-start: 5;
-    grid-row-end: 6;
-    grid-column-start: 2;
-    grid-column-end: 3;
     align-items: center;
   }
 }

@@ -30,6 +30,9 @@ export default {
     articleDetail: function() {
       this.$router.push({ path: "/post" });
     }
+  },
+  mounted() {
+    console.log(this.pics);
   }
 };
 </script>

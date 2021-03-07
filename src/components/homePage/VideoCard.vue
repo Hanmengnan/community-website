@@ -1,6 +1,10 @@
 <template>
   <div class="cover-container full-size">
-    <img class="video-cover" :src="src" alt="视频封面" />
+    <img
+      class="video-cover"
+      :src="cover + '?vframe/jpg/offset/1'"
+      alt="视频封面"
+    />
     <img
       class="play-button"
       src="http://kodo.wendau.com/%E4%B8%8B%E8%BD%BD.png"
@@ -12,11 +16,16 @@
 <script>
 export default {
   name: "VideoCard",
+  props: {
+    cover: {
+      type: String,
+      required: false,
+      default: ""
+    }
+  },
   data() {
     return {
       title: "第一个视频",
-      src:
-        "https://cdn.cnbj1.fds.api.mi-img.com/middle.community.vip.bkt/808a976601ca5c999a07494e3b57086c",
       tags: [
         {
           tagName: "逼逼1111"
@@ -32,7 +41,8 @@ export default {
       author: "siegelion",
       createTime: ""
     };
-  }
+  },
+  mounted() {}
 };
 </script>
 

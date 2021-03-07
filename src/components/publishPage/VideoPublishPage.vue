@@ -23,8 +23,8 @@
     </div>
     <div class="title-edit-area">
       <v-text-field
-        ref="subTitle"
-        label="输入文章摘要"
+        ref="videoTitle"
+        label="输入视频标题"
         hideDetails
         solo-inverted
       ></v-text-field>
@@ -129,10 +129,10 @@ export default {
     publish: function() {
       let formData = new FormData();
       formData.append("createTime", new Date().getTime());
+      formData.append("title", this.$refs.videoTitle.internalValue);
       formData.append("tags", JSON.stringify(this.$refs.tags.internalValue));
       formData.append("classify", this.$refs.classify.internalValue);
       formData.append("videoUrl", this.videoURL);
-      console.log(formData);
 
       this.axios
         .post("/publishVideo", formData)

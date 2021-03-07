@@ -3,13 +3,6 @@
     <div>{{ subTitle }}</div>
     <div class="pic-area">
       <img class="cover" :src="cover" alt="cover" />
-      <!--      <img-->
-      <!--        class="pic"-->
-      <!--        v-for="(pic, index) in pics"-->
-      <!--        :key="index"-->
-      <!--        :src="pic"-->
-      <!--        alt="图像"-->
-      <!--      />-->
     </div>
   </div>
 </template>
@@ -20,10 +13,6 @@ export default {
   props: {
     subTitle: {
       type: String,
-      required: true
-    },
-    pics: {
-      type: Array,
       required: true
     },
     cover: {
@@ -49,7 +38,7 @@ export default {
     flex-wrap: wrap;
     width: 100%;
     height: 70%;
-    .cover{
+    .cover {
       max-width: 35vw;
       max-height: 25vh;
     }
