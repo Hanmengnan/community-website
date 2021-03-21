@@ -4,41 +4,26 @@
       <div class="content">
         <div class="content-header">
           <v-avatar>
-            <img :src="author.avatarSrc" alt="avatar" />
+            <img :src="author.avatarUrl" alt="avatar" />
           </v-avatar>
           <div class="content-header-info">
             <div>{{ author.nickName }}</div>
-            <div>{{ author.dataTime }}</div>
+            <div v-text="changeTimeStamp(this.publishTime)"></div>
           </div>
         </div>
         <div class="content-body">
-          {{ articleContent }}
-        </div>
-        <v-carousel v-model="aimImgIndex">
-          <v-carousel-item
-            v-for="(img, index) in imgList"
-            :key="index"
-            :src="img.src"
-          >
-          </v-carousel-item>
-        </v-carousel>
-        <div class="image-list">
-          <div
-            v-for="(img, index) in imgList"
-            :key="index"
-            :class="[index === aimImgIndex ? 'image-picked' : 'image-box']"
-            v-on:click="aimImgIndex = index"
-          >
-            <v-img
-              :src="img.src"
-              :lazy-src="img.src"
-              width="80"
-              height="80"
-            ></v-img>
-          </div>
+          <router-view :content-data="contentData"></router-view>
         </div>
         <div class="content-footer">
-          <v-btn small outlined rounded color="primary">{{ tag }}</v-btn>
+          <v-btn
+            small
+            outlined
+            rounded
+            color="primary"
+            v-for="(tag, index) in tags"
+            :key="index"
+            >{{ tag }}</v-btn
+          >
           <div class="content-footer-btn">
             <v-btn depressed text>
               <v-icon left color="primary">mdi-thumb-up-outline</v-icon>
@@ -134,49 +119,9 @@
 
 <script>
 export default {
-  name: "ArticlePage",
-  props: {
-    tag: {
-      type: String,
-      required: false,
-      default: "Complete"
-    },
-    author: {
-      type: Object,
-      required: false,
-      default: function() {
-        return {
-          avatarSrc:
-            "https://cdn.cnbj1.fds.api.mi-img.com/middle.community.vip.bkt/d207f8ad70c2a5dbb9d26cd10928338e",
-          nickName: "siegelion",
-          dataTime: "2020-1-1"
-        };
-      }
-    },
-    articleContent: {
-      type: String,
-      required: true
-    },
-    imgList: {
-      type: Array,
-      required: false,
-      default: function() {
-        return [
-          {
-            src:
-              "https://cdn.cnbj1.fds.api.mi-img.com/middle.community.vip.bkt/d207f8ad70c2a5dbb9d26cd10928338e"
-          },
-          {
-            src:
-              "https://cdn.cnbj1.fds.api.mi-img.com/middle.community.vip.bkt/a5ec3e31bc392b79ff4d8ddc31575cd2"
-          }
-        ];
-      }
-    }
-  },
+  name: "PostLayout",
   data() {
     return {
-      aimImgIndex: 0,
       commentList: [
         {
           show: false,
@@ -431,13 +376,61 @@ export default {
           anonyComment: false,
           adopted: false
         }
-      ]
+      ],
+      author: {},
+      tags: [],
+      publishTime: 1615201410185,
+      contentData: {}
     };
   },
+  computed: {},
   methods: {
     changeTimeStamp: function(timeStamp) {
-      return new Date(timeStamp).toLocaleString();
+      return new Date(timeStamp).toLocaleDateString();
     }
+  },
+  created() {
+    let type;
+    if (this.$route.name === "ArticleDetail") {
+      type = 0;
+    } else if (this.$route.name === "IdeaDetail") {
+      type = 1;
+    } else {
+      type = 2;
+    }
+    this.axios
+      .get("/post", {
+        params: {
+          type: type,
+          id: this.$route.params.id
+        }
+      })
+      .then(
+        function(res) {
+          this.author = {
+            avatarUrl: res.data.contain.avatarUrl,
+            nickName: res.data.contain.nickName
+          };
+          this.tags = res.data.contain.tags;
+          this.publishTime = Number(res.data.contain.createTime);
+          if (type === 0) {
+            this.contentData = {
+              articleContent: res.data.contain.articleContent
+            };
+          } else if (type === 1) {
+            this.contentData = {
+              pics: res.data.contain.pics,
+              ideaContent: res.data.contain.ideaContent
+            };
+          } else {
+            this.contentData = {
+              videoUrl: res.data.contain.videoUrl
+            };
+            console.log("contentData", this.contentData);
+          }
+        }.bind(this)
+      )
+      .catch();
   }
 };
 </script>
@@ -478,6 +471,9 @@ export default {
           align-items: center;
           margin-left: 10px;
         }
+      }
+      &-body {
+        margin-bottom: 20px;
       }
       &-footer {
         display: flex;

@@ -7,7 +7,7 @@
       <router-view></router-view>
       <PageFunctionButton class="hover-button"></PageFunctionButton>
     </v-main>
-    <v-footer color="primary" padless>
+    <v-footer class="footer-container" color="primary" padless>
       <div class="footer">
         <div
           style="display: flex; justify-content: center; align-items: center; width: 25%"
@@ -49,16 +49,22 @@ export default {
   bottom: 15%;
   right: 2%;
 }
-.footer {
-  display: flex;
-  justify-content: center;
+.footer-container {
+  position: absolute;
+  bottom: 0;
   width: 100%;
-  text-align: center;
-  color: white;
-  .master-container {
+  .footer {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+    color: white;
+
+    .master-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
   }
 }
 </style>

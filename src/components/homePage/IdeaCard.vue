@@ -31,27 +31,29 @@ export default {
       this.$router.push({ path: "/post" });
     }
   },
-  mounted() {
-    console.log(this.pics);
-  }
+  mounted() {}
 };
 </script>
 
 <style lang="less" scoped>
 @import "~@/assets/css/common";
 @import "~@/assets/css/varibale";
+
 .article-container:extend(.flex-layout) {
   flex-direction: column;
   align-items: flex-start;
+
   .article-content {
     color: @default-font-color;
     font-size: @default-font;
   }
+
   .pic-area {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
     height: 70%;
+
     .pic {
       max-width: 13vw;
       max-height: 13vh;

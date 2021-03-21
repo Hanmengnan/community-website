@@ -48,6 +48,14 @@
 export default {
   name: "PublishCard",
   props: {
+    type: {
+      type: Number,
+      required: true
+    },
+    id: {
+      type: String,
+      required: true
+    },
     title: {
       type: String,
       required: false,
@@ -74,7 +82,7 @@ export default {
   },
   methods: {
     articleDetail: function() {
-      this.$router.push({ path: "/post" });
+      this.$router.push({ path: "/post/" + this.type + "/" + this.id });
     }
   }
 };

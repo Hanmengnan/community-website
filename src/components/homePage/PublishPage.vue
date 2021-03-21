@@ -1,15 +1,13 @@
 <template>
-  <div class="full-size">
-    <v-card class="page-container">
-      <v-card-title class="page-header">
-        <div>标签 ：</div>
-        <v-chip>{{ this.$route.params.tagName }}</v-chip>
-      </v-card-title>
-      <div class="page-body">
-        <list :list-items="publishList"></list>
-      </div>
-    </v-card>
-  </div>
+  <v-card class="page-container">
+    <v-card-title class="page-header">
+      <div>标签 ：</div>
+      <v-chip>{{ this.$route.params.tagName }}</v-chip>
+    </v-card-title>
+    <div class="page-body">
+      <list :list-items="publishList"></list>
+    </div>
+  </v-card>
 </template>
 
 <script>
